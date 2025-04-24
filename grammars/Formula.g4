@@ -5,6 +5,7 @@ formula
     | formula '->' formula
     | '!' formula
     | formula '&' formula
+    | formula '|' formula
     | 'true'
     | 'false'
     | predicates
@@ -24,7 +25,8 @@ predicates
     ;
 
 term
-    : Int
+    : Id
+    | Int
     | Bool
     ;
 
