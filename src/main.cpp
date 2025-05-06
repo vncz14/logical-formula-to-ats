@@ -5,6 +5,8 @@
 #include "FormulaLexer.h"
 #include "FormulaParser.h"
 
+#include "TypeChecker.h"
+
 using namespace antlr4;
 
 int main()
@@ -85,7 +87,5 @@ int main()
     FormulaParser formulaParser(&formulaTokens);
     FormulaParser::FormulaContext *formulaTree = formulaParser.formula();
 
-    std::cout << typeListTree->toStringTree(&parser) << std::endl;
-    std::cout << std::endl;
-    std::cout << formulaTree->toStringTree(&formulaParser) << std::endl;
+    TypeChecker typeChecker = TypeChecker(*typeListTree);
 }

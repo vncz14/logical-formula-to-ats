@@ -14,6 +14,7 @@ endif()
 
 include_directories(${ANTLR_RUNTIME_DIR}/runtime/src)
 include_directories(${CMAKE_BINARY_DIR}/build)
+include_directories(${SRC_DIR})
 
 find_program(ANTLR4_EXECUTABLE antlr4 REQUIRED)
 
@@ -35,7 +36,11 @@ foreach(GRAMMAR_FILE ${GRAMMAR_FILES})
 endforeach()
 
 set(SOURCE_FILES
+    ${SRC_DIR}/TypeChecker.cpp
+    ${SRC_DIR}/Symbol.cpp
+
     ${SRC_DIR}/main.cpp
+
     ${GENERATED_FILES}
 )
 
