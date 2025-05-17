@@ -3,8 +3,25 @@
 
 #include "TypeAnnotationListLexer.h"
 #include "TypeAnnotationListParser.h"
+#include "FormulaLexer.h"
+#include "FormulaParser.h"
+
+#include "PredicateCheckerVisitor.h"
 
 #include "TypeChecker.h"
+
+using namespace antlr4;
+
+TypeChecker::TypeChecker(std::string typeAnnotationList)
+{
+    ANTLRInputStream typeAnnotationListInputStream(typeAnnotationList);
+    TypeAnnotationListLexer typeAnnotationListLexer(&typeAnnotationListInputStream);
+    CommonTokenStream typeAnnotationListTokens(&typeAnnotationListLexer);
+    TypeAnnotationListParser typeAnnotationListParser(&typeAnnotationListTokens);
+    TypeAnnotationListParser::TypeAnnotationListContext *typeListTree = typeAnnotationListParser.typeAnnotationList();
+
+    *this = TypeChecker(*typeListTree);
+}
 
 TypeChecker::TypeChecker(TypeAnnotationListParser::TypeAnnotationListContext &typeListTree)
 {
@@ -13,25 +30,14 @@ TypeChecker::TypeChecker(TypeAnnotationListParser::TypeAnnotationListContext &ty
         std::string symbolName = typeAnnotation->Id()->getText();
         typeMap[symbolName] = Symbol(typeAnnotation);
     }
+}
 
-    for (const auto &pair : typeMap)
-    {
-        const std::string &name = pair.first;
-        const Symbol &symbol = pair.second;
+std::vector<FormulaParser::PredicatesContext *> TypeChecker::check(FormulaParser::FormulaContext *tree)
+{
+    std::vector<FormulaParser::PredicatesContext *> errors;
+    PredicateCheckerVisitor visitor(this->typeMap, errors);
 
-        std::cout << "Symbol: " << name << ", Type: ";
-        switch (symbol.type)
-        {
-        case Symbol::SymbolType::ENUM:
-            std::cout << "ENUM";
-            break;
-        case Symbol::SymbolType::INT:
-            std::cout << "INT";
-            break;
-        case Symbol::SymbolType::BOOL:
-            std::cout << "BOOL";
-            break;
-        }
-        std::cout << std::endl;
-    }
+    visitor.visit(tree);
+
+    return errors;
 }

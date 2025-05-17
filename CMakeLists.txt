@@ -26,7 +26,7 @@ foreach(GRAMMAR_FILE ${GRAMMAR_FILES})
     add_custom_command(
         OUTPUT ${BUILD_DIR}/${GRAMMAR_NAME}Lexer.cpp ${BUILD_DIR}/${GRAMMAR_NAME}Lexer.h
                ${BUILD_DIR}/${GRAMMAR_NAME}Parser.cpp ${BUILD_DIR}/${GRAMMAR_NAME}Parser.h
-        COMMAND ${ANTLR4_EXECUTABLE} -Dlanguage=Cpp -o ${BUILD_DIR} ${GRAMMAR_FILE}
+        COMMAND ${ANTLR4_EXECUTABLE} -Dlanguage=Cpp -visitor -o ${BUILD_DIR} ${GRAMMAR_FILE}
         DEPENDS ${GRAMMAR_FILE}
     )
     list(APPEND GENERATED_FILES
@@ -38,6 +38,7 @@ endforeach()
 set(SOURCE_FILES
     ${SRC_DIR}/TypeChecker.cpp
     ${SRC_DIR}/Symbol.cpp
+    ${SRC_DIR}/PredicateCheckerVisitor.cpp
 
     ${SRC_DIR}/main.cpp
 

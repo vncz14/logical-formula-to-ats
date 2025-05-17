@@ -67,7 +67,7 @@ int main()
         Bool ap_pi;
     )";
 
-    const std::string myForumula = R"(
+    const std::string myFormula = R"(
         H (
             ((O response=confirm_success) & request=confirm_success &
             (send_confirm < 65535 | send_confirm > ap_send_confirm))
@@ -75,17 +75,18 @@ int main()
         )
     )";
 
-    ANTLRInputStream typeListInputStream(myTypeList);
-    TypeAnnotationListLexer lexer(&typeListInputStream);
-    CommonTokenStream tokens(&lexer);
-    TypeAnnotationListParser parser(&tokens);
-    TypeAnnotationListParser::TypeAnnotationListContext *typeListTree = parser.typeAnnotationList();
+    TypeChecker typeChecker = TypeChecker(myTypeList);
 
-    ANTLRInputStream formulaInputStream(myForumula);
+    ANTLRInputStream formulaInputStream(myFormula);
     FormulaLexer formulaLexer(&formulaInputStream);
     CommonTokenStream formulaTokens(&formulaLexer);
     FormulaParser formulaParser(&formulaTokens);
     FormulaParser::FormulaContext *formulaTree = formulaParser.formula();
 
-    TypeChecker typeChecker = TypeChecker(*typeListTree);
+    auto errors = typeChecker.check(formulaTree);
+
+    for (auto error : errors)
+    {
+        std::cout << "Error: " << error->getText() << std::endl;
+    }
 }

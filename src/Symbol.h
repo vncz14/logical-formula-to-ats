@@ -1,3 +1,6 @@
+#ifndef SYMBOL_H
+#define SYMBOL_H
+
 #include <vector>
 #include <string>
 #include "TypeAnnotationListParser.h"
@@ -21,3 +24,5 @@ public:
 
     Symbol(TypeAnnotationListParser::TypeAnnotationContext *typeAnnotation);
 };
+
+#endif // SYMBOL_H
